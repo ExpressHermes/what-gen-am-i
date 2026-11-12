@@ -1,0 +1,338 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Which Generation Am I? 🤔 Boomer, Millennial, Gen Z…</title>
+<meta name="description" content="Boomer, Gen X, Millennial, Gen Z or Gen Alpha? Enter your birth year to find your generation, then take a fun 8-question quiz to see which generation you actually vibe with.">
+<!-- Link previews (WhatsApp, X, Facebook, LinkedIn, Slack…). Scrapers need absolute URLs:
+     if the site moves (custom domain, Cloudflare Pages), update og:url, og:image and twitter:image. -->
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://expresshermes.github.io/what-gen-am-i/">
+<meta property="og:site_name" content="Which Generation Am I?">
+<meta property="og:title" content="Which Generation Am I? 🤔">
+<meta property="og:description" content="Find your generation from your birth year, then take the quiz to see which generation you actually vibe with. Born a Millennial, vibing like a Boomer?">
+<meta property="og:image" content="https://expresshermes.github.io/what-gen-am-i/og-image.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="Which Generation Am I? — Boomer, Gen X, Millennial, Gen Z, Gen Alpha">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Which Generation Am I? 🤔">
+<meta name="twitter:description" content="Find your generation, then find your vibe generation. Takes 30 seconds.">
+<meta name="twitter:image" content="https://expresshermes.github.io/what-gen-am-i/og-image.png">
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<meta name="theme-color" content="#ff4f81">
+<script>
+  // Set the theme before first paint so there's no light-mode flash.
+  document.documentElement.dataset.theme = localStorage.getItem("theme") ||
+    (matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light");
+</script>
+<style>
+  :root { --bg: #fff7ec; --card: #fff; --ink: #1d1b2f; --muted: #6b6880; --accent: #ff4f81; --accent2: #6c5ce7; --ring: #ffd23f;
+    --soft: #fff0f5; --soft2: #f4f2ff; --rule: #eee; --glow1: #ffe3ef; --glow2: #e3e0ff; color-scheme: light; }
+  [data-theme="dark"] { --bg: #14121d; --card: #221f33; --ink: #f3f1ff; --muted: #a9a5c0; --accent: #ff5c8d; --accent2: #8f83ff;
+    --soft: #33213a; --soft2: #2a2645; --rule: #39354f; --glow1: #3a1830; --glow2: #1f1c46; color-scheme: dark; }
+  * { box-sizing: border-box; }
+  body { margin: 0; min-height: 100vh; display: grid; place-items: center; padding: 16px;
+    font: 17px/1.5 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; color: var(--ink);
+    background: radial-gradient(circle at 10% 10%, var(--glow1), transparent 40%), radial-gradient(circle at 90% 90%, var(--glow2), transparent 40%), var(--bg); }
+  main { position: relative; width: 100%; max-width: 560px; background: var(--card); border-radius: 24px; padding: 32px 28px;
+    box-shadow: 0 10px 0 var(--ink); border: 3px solid var(--ink); }
+  h1 { font-size: 2rem; line-height: 1.15; margin: 0 0 8px; }
+  h2 { font-size: 1.35rem; margin: 0 0 16px; }
+  p { margin: 0 0 16px; }
+  .muted { color: var(--muted); }
+  .big { font-size: 3.5rem; line-height: 1; margin: 8px 0; }
+  label { display: block; font-weight: 600; margin-bottom: 6px; }
+  input { width: 100%; font: inherit; font-size: 1.25rem; padding: 12px 14px; border: 3px solid var(--ink); border-radius: 12px; background: var(--card); color: var(--ink); }
+  button { font: inherit; font-weight: 700; cursor: pointer; border: 3px solid var(--ink); border-radius: 14px; padding: 12px 18px;
+    background: var(--accent); color: #fff; box-shadow: 0 4px 0 var(--ink); transition: transform .08s, box-shadow .08s; }
+  button:hover { transform: translateY(-1px); box-shadow: 0 5px 0 var(--ink); }
+  button:active { transform: translateY(3px); box-shadow: 0 1px 0 var(--ink); }
+  button.secondary, a.btn { background: var(--card); color: var(--ink); }
+  a.btn { font-weight: 700; text-decoration: none; border: 3px solid var(--ink); border-radius: 14px; padding: 12px 18px; box-shadow: 0 4px 0 var(--ink); }
+  button:focus-visible, input:focus-visible, a:focus-visible { outline: 4px solid var(--ring); outline-offset: 2px; }
+  #theme { position: absolute; top: 14px; right: 14px; padding: 6px 10px; font-size: 1.1rem; background: var(--card); color: var(--ink); box-shadow: 0 3px 0 var(--ink); }
+  #s-year h1 { padding-right: 52px; }
+  .row { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 16px; }
+  .options { display: grid; gap: 10px; }
+  .options button { text-align: left; background: var(--card); color: var(--ink); font-weight: 500; }
+  .options button:hover { background: var(--soft); }
+  #card-img { display: block; width: 100%; border-radius: 16px; border: 3px solid var(--ink); margin-top: 16px; }
+  .small { font-size: .9rem; }
+  .progress { height: 10px; background: var(--rule); border-radius: 99px; overflow: hidden; margin-bottom: 18px; border: 2px solid var(--ink); }
+  .progress > div { height: 100%; background: var(--accent2); transition: width .25s; }
+  [data-theme="dark"] .error { color: #ff8a9a; }
+  .error.fun, [data-theme="dark"] .error.fun { color: var(--accent2); font-size: 1.1rem; }
+  .error { color: #c0162c; font-weight: 600; min-height: 1.5em; margin: 8px 0 0; }
+  .tag { display: inline-block; background: var(--ring); color: #1d1b2f; border: 2px solid var(--ink); border-radius: 99px; padding: 2px 12px; font-weight: 700; font-size: .9rem; }
+  .verdict { background: var(--soft2); border: 2px dashed var(--accent2); border-radius: 14px; padding: 12px 14px; margin-top: 12px; }
+  table { width: 100%; border-collapse: collapse; font-size: .95rem; margin-top: 8px; }
+  td { padding: 4px 0; border-bottom: 1px solid var(--rule); }
+  tr.you td { font-weight: 700; color: var(--accent); }
+  [hidden] { display: none !important; }
+  @media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
+</style>
+</head>
+<body>
+<main id="app" aria-live="polite">
+  <button id="theme" type="button" aria-label="Dark mode" aria-pressed="false">🌙</button>
+  <!-- Step 1: birth year -->
+  <section id="s-year">
+    <h1>Which Generation Am I? 🤔</h1>
+    <p class="muted">Boomer? Millennial? Gen Z? Find out in two seconds — then take the quiz to see which generation you <em>actually</em> vibe with.</p>
+    <form id="year-form" novalidate>
+      <label for="year">What year were you born?</label>
+      <input id="year" type="number" inputmode="numeric" placeholder="e.g. 1995" required>
+      <p class="error" id="year-error" role="alert"></p>
+      <div class="row">
+        <button type="submit">Tell me! ✨</button>
+        <button type="button" class="secondary" id="skip">Skip, just the quiz</button>
+      </div>
+    </form>
+  </section>
+
+  <!-- Step 2: official generation -->
+  <section id="s-gen" hidden>
+    <span class="tag">Officially, you are…</span>
+    <div class="big" id="gen-emoji"></div>
+    <h1 id="gen-name"></h1>
+    <p class="muted" id="gen-years"></p>
+    <p id="gen-blurb"></p>
+    <p class="verdict" id="gen-cusp" hidden></p>
+    <details>
+      <summary>See all generations</summary>
+      <table id="gen-table"></table>
+    </details>
+    <div class="row">
+      <button id="to-quiz">But what's my vibe generation? 👀</button>
+      <button class="secondary" data-restart>Start over</button>
+    </div>
+  </section>
+
+  <!-- Step 3: quiz -->
+  <section id="s-quiz" hidden>
+    <div class="progress" aria-hidden="true"><div id="bar"></div></div>
+    <p class="muted" id="q-count"></p>
+    <h2 id="q-text" tabindex="-1"></h2>
+    <div class="options" id="q-options"></div>
+  </section>
+
+  <!-- Step 4: vibe result -->
+  <section id="s-vibe" hidden>
+    <span class="tag">Your vibe generation is…</span>
+    <div class="big" id="vibe-emoji"></div>
+    <h1 id="vibe-name" tabindex="-1"></h1>
+    <p id="vibe-blurb"></p>
+    <p class="verdict" id="vibe-verdict" hidden></p>
+    <div class="row">
+      <button class="secondary" data-restart>Take it again</button>
+    </div>
+  </section>
+
+  <!-- Shared by both result screens (birth-year result and vibe result). -->
+  <div id="share-box" hidden>
+    <img id="card-img" alt="">
+    <p class="muted small">Your result card. <strong>Share image</strong> sends this picture; WhatsApp / X / Facebook send the text and link. You can also long-press / right-click it to save.</p>
+    <div class="row">
+      <button id="share">Share image 📸</button>
+      <a class="btn" id="share-wa" target="_blank" rel="noopener">WhatsApp</a>
+      <a class="btn" id="share-x" target="_blank" rel="noopener">X / Twitter</a>
+      <a class="btn" id="share-fb" target="_blank" rel="noopener">Facebook</a>
+      <button class="secondary" id="copy">Copy text 📋</button>
+    </div>
+    <p class="muted" id="share-msg" role="status"></p>
+  </div>
+</main>
+
+<script src="gen.js"></script>
+<script>
+  const $ = id => document.getElementById(id);
+  const sections = ["s-year", "s-gen", "s-quiz", "s-vibe"];
+  const show = id => {
+    sections.forEach(s => $(s).hidden = s !== id);
+    $("share-box").hidden = id !== "s-gen" && id !== "s-vibe";
+  };
+  const THIS_YEAR = new Date().getFullYear();
+
+  let birthGen = null, answers = [], qi = 0, vibe = null;
+
+  $("year-form").addEventListener("submit", e => {
+    e.preventDefault();
+    const raw = $("year").value.trim(), year = Number(raw); // Number("") is 0, so check raw too
+    const funny = raw && Number.isInteger(year) ? outOfRangeMessage(year, THIS_YEAR) : null;
+    const gen = raw && Number.isInteger(year) && !funny ? generationFor(year) : null;
+    if (!gen) {
+      $("year-error").className = funny ? "error fun" : "error";
+      $("year-error").textContent = funny || "Please enter your birth year as a number, like 1995.";
+      return $("year").focus();
+    }
+    $("year-error").textContent = "";
+    birthGen = gen; vibe = null;
+    $("gen-emoji").textContent = gen.emoji;
+    $("gen-name").textContent = gen.name;
+    $("gen-years").textContent = `Born ${gen.from}–${gen.to} · you're turning about ${THIS_YEAR - year} this year`;
+    $("gen-blurb").textContent = gen.blurb;
+    const cusp = cuspFor(year);
+    $("gen-cusp").hidden = !cusp;
+    if (cusp) $("gen-cusp").textContent = `Plot twist: you're also a ${cusp.name} (${cusp.from}–${cusp.to}) — a cusper! ${cusp.note}`;
+    $("gen-table").innerHTML = GENS.map(g =>
+      `<tr class="${g === gen ? "you" : ""}"><td>${g.emoji} ${g.name}</td><td>${g.from}–${g.to}</td></tr>`).join("");
+    prepareShare();
+    show("s-gen");
+    $("gen-name").setAttribute("tabindex", "-1");
+    $("gen-name").focus();
+  });
+
+  $("skip").addEventListener("click", startQuiz);
+  $("to-quiz").addEventListener("click", startQuiz);
+
+  function startQuiz() {
+    answers = []; qi = 0;
+    show("s-quiz");
+    renderQuestion();
+  }
+
+  function renderQuestion() {
+    const { q, a } = QUESTIONS[qi];
+    $("bar").style.width = `${(qi / QUESTIONS.length) * 100}%`;
+    $("q-count").textContent = `Question ${qi + 1} of ${QUESTIONS.length}`;
+    $("q-text").textContent = q;
+    // Shuffle the generation answers; the "I don't…" opt-out (key null) always stays last.
+    const opts = [...shuffle(a.filter(o => o[1])), ...a.filter(o => !o[1])];
+    $("q-options").replaceChildren(...opts.map(([text, key]) => {
+      const b = document.createElement("button");
+      b.type = "button";
+      b.textContent = text;
+      b.onclick = () => { answers.push(key); ++qi < QUESTIONS.length ? renderQuestion() : showVibe(); };
+      return b;
+    }));
+    $("q-text").focus();
+  }
+
+  function showVibe() {
+    vibe = tally(answers); // never null: some questions have no "I don't…" option (asserted in check.js)
+    $("vibe-emoji").textContent = vibe.emoji;
+    $("vibe-name").textContent = vibe.name;
+    $("vibe-blurb").textContent = vibe.blurb;
+    $("vibe-verdict").hidden = !birthGen;
+    if (birthGen) {
+      const order = GENS.indexOf(vibe) - GENS.indexOf(birthGen);
+      $("vibe-verdict").textContent = order === 0
+        ? `Born a ${birthGen.name}, vibing as a ${vibe.name}. You are exactly who your birth certificate says. 💯`
+        : order < 0
+          ? `Born a ${birthGen.name}, but you vibe like a ${vibe.name}. An old soul! 👴`
+          : `Born a ${birthGen.name}, but you vibe like a ${vibe.name}. Forever young! 🧒`;
+    }
+    prepareShare();
+    show("s-vibe");
+    $("vibe-name").focus();
+  }
+
+  // Share whatever result is on screen: vibe result if the quiz is done, otherwise the birth-year result.
+  function prepareShare() {
+    $("share-msg").textContent = "";
+    const enc = encodeURIComponent, text = shareText(), url = pageUrl();
+    // api.whatsapp.com, not wa.me: wa.me's redirect mangles emoji into "�".
+    $("share-wa").href = `https://api.whatsapp.com/send?text=${enc(withUrl(text))}`;
+    $("share-x").href = `https://twitter.com/intent/tweet?text=${enc(text)}${url ? `&url=${enc(url)}` : ""}`;
+    $("share-fb").href = `https://www.facebook.com/sharer/sharer.php?u=${enc(url)}`; // FB ignores text; it uses the og: tags
+    $("share-fb").hidden = !url; // Facebook can only share a public link
+    drawCard();
+  }
+
+  // Only a real web address is worth sharing; opened as a local file (file://) there's no link to send.
+  const pageUrl = () => /^https?:$/.test(location.protocol) ? location.origin + location.pathname : "";
+  const withUrl = text => pageUrl() ? `${text} ${pageUrl()}` : text;
+  const shareText = () => (!vibe
+    ? `I'm officially a ${birthGen.name} ${birthGen.emoji} (born ${birthGen.from}–${birthGen.to})!`
+    : birthGen === vibe
+      ? `I'm officially a ${birthGen.name} ${birthGen.emoji} and I vibe exactly like one 💯!`
+    : birthGen
+      ? `I'm officially a ${birthGen.name} ${birthGen.emoji} but I vibe like a ${vibe.name} ${vibe.emoji}!`
+      : `My vibe generation is ${vibe.name} ${vibe.emoji}!`) + " Which generation are you? 👀";
+
+  // Square 1080×1080 result card (Instagram/WhatsApp-story friendly), in the current theme's colours.
+  let cardBlob = null;
+  function drawCard() {
+    const css = n => getComputedStyle(document.documentElement).getPropertyValue(n).trim();
+    const c = document.createElement("canvas"), x = c.getContext("2d"), S = 1080;
+    c.width = c.height = S;
+    const g = x.createLinearGradient(0, 0, S, S);
+    g.addColorStop(0, css("--accent")); g.addColorStop(1, css("--accent2"));
+    x.fillStyle = g; x.fillRect(0, 0, S, S);
+    // card with offset "shadow"
+    const box = (fill, dx) => { x.fillStyle = fill; x.beginPath(); x.roundRect(80 + dx, 80 + dx, S - 160, S - 160, 48); x.fill(); };
+    box(css("--ink"), 16); box(css("--card"), 0);
+    x.strokeStyle = css("--ink"); x.lineWidth = 8; x.stroke();
+    x.textAlign = "center"; x.fillStyle = css("--ink");
+    const font = (px, w = 800) => x.font = `${w} ${px}px system-ui, -apple-system, "Segoe UI", Roboto, sans-serif`;
+    const main = vibe || birthGen;
+    font(40, 700); x.fillStyle = css("--muted"); x.fillText(vibe ? "MY VIBE GENERATION IS" : "I'M OFFICIALLY A", S / 2, 220);
+    font(220, 400); x.fillText(main.emoji, S / 2, 470);
+    font(110); x.fillStyle = css("--accent"); x.fillText(main.name, S / 2, 630);
+    x.fillStyle = css("--ink");
+    if (!vibe) {
+      font(48, 600);
+      x.fillText(`Born between ${birthGen.from} and ${birthGen.to}`, S / 2, 760);
+    } else if (birthGen) {
+      font(48, 600);
+      x.fillText(`Born a ${birthGen.name} ${birthGen.emoji}`, S / 2, 740);
+      x.fillText(birthGen === vibe ? "and I vibe exactly like one 💯" : `but I vibe like a ${vibe.name}`, S / 2, 805);
+    }
+    font(38, 700); x.fillStyle = css("--muted");
+    x.fillText(`Which Generation Am I? 🤔 ${location.host}`.trim(), S / 2, 930);
+    c.toBlob(b => { cardBlob = b; $("card-img").src = URL.createObjectURL(b); });
+    $("card-img").alt = shareText();
+  }
+
+  $("share").addEventListener("click", async () => {
+    if (!cardBlob) return;
+    const file = new File([cardBlob], "my-generation.png", { type: "image/png" });
+    try {
+      if (navigator.canShare?.({ files: [file] })) return await navigator.share({ files: [file], text: withUrl(shareText()) });
+    } catch (e) { if (e.name === "AbortError") return; } // user closed the share sheet
+    // Desktop fallback 1: put the image on the clipboard so it can be pasted into WhatsApp Web, etc.
+    try {
+      await navigator.clipboard.write([new ClipboardItem({ "image/png": cardBlob })]);
+      return $("share-msg").textContent = "Image copied! Paste it (⌘/Ctrl + V) into WhatsApp, Instagram or anywhere. 🎉";
+    } catch { /* clipboard images unsupported or blocked */ }
+    // Desktop fallback 2: download the image.
+    const a = Object.assign(document.createElement("a"), { href: $("card-img").src, download: file.name });
+    a.click();
+    $("share-msg").textContent = "Image downloaded — attach it to your post or chat! 🎉";
+  });
+
+  $("copy").addEventListener("click", async () => {
+    try { await navigator.clipboard.writeText(withUrl(shareText())); $("share-msg").textContent = "Copied to clipboard! 📋"; }
+    catch { $("share-msg").textContent = "Couldn't copy — your browser blocked clipboard access."; }
+  });
+
+  const themeBtn = $("theme");
+  function syncThemeBtn() {
+    const dark = document.documentElement.dataset.theme === "dark";
+    themeBtn.textContent = dark ? "☀️" : "🌙";
+    themeBtn.setAttribute("aria-pressed", dark);
+  }
+  themeBtn.addEventListener("click", () => {
+    const next = document.documentElement.dataset.theme === "dark" ? "light" : "dark";
+    document.documentElement.dataset.theme = next;
+    localStorage.setItem("theme", next);
+    syncThemeBtn();
+    if (!$("share-box").hidden) drawCard();
+  });
+  syncThemeBtn();
+
+  document.querySelectorAll("[data-restart]").forEach(b => b.addEventListener("click", () => {
+    birthGen = null; vibe = null; $("year").value = ""; show("s-year"); $("year").focus();
+  }));
+
+  function shuffle(arr) {
+    const a = arr.slice();
+    for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; }
+    return a;
+  }
+</script>
+</body>
+</html>
