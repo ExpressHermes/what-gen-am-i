@@ -2,7 +2,7 @@
 
 # 🤔 What Gen Am I?
 
-**Boomer? Millennial? Gen Z? Find out in two seconds — then find out which generation you _actually_ vibe with.**
+**Boomer? Millennial? Gen Z? Find out in two seconds - then find out which generation you _actually_ vibe with.**
 
 [**▶ Try it live**](https://expresshermes.github.io/what-gen-am-i/) · [Report a bug](https://github.com/ExpressHermes/what-gen-am-i/issues) · [Suggest a question](https://github.com/ExpressHermes/what-gen-am-i/issues)
 
