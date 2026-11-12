@@ -4,12 +4,15 @@ const { GENS, QUESTIONS, generationFor, cuspFor, tally, outOfRangeMessage } = re
 
 // Out-of-range years get a fun message; in-range years get none. Try every variant (rand 0, .5, .99).
 for (const r of [0, 0.5, 0.99]) {
-  assert.match(outOfRangeMessage(1850, 2026, () => r), /1850/);            // fossil
-  assert.match(outOfRangeMessage(2030, 2026, () => r), /2030/);            // not born yet
+  assert.match(outOfRangeMessage(1850, 2026, () => r), /fossil|antique/);  // before 1901
+  assert.match(outOfRangeMessage(2030, 2026, () => r), /Gen Beta/);        // future, but Gen Beta (≤ 2039)
+  assert.match(outOfRangeMessage(2039, 2026, () => r), /Gen Beta/);        // last Gen Beta year
+  assert.doesNotMatch(outOfRangeMessage(2040, 2026, () => r), /Gen Beta/); // no named generation yet
 }
 assert.match(outOfRangeMessage(1900, 2026, () => 0), /fossil/);
-assert.match(outOfRangeMessage(2027, 2026, () => 0), /in 1 year\./);      // singular
-assert.match(outOfRangeMessage(2030, 2026, () => 0), /in 4 years\./);
+assert.match(outOfRangeMessage(2027, 2026, () => 0), /in 1 year,/);      // singular
+assert.match(outOfRangeMessage(2030, 2026, () => 0), /in 4 years,/);
+assert.match(outOfRangeMessage(2050, 2026, () => 0), /in 24 years\./);
 assert.strictEqual(outOfRangeMessage(1901, 2026), null);
 assert.strictEqual(outOfRangeMessage(2026, 2026), null);
 

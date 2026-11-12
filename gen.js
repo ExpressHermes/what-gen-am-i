@@ -35,22 +35,32 @@ function cuspFor(year) {
   return CUSPS.find(c => year >= c.from && year <= c.to) || null;
 }
 
-// Playful replies for years outside the known generations. y = birth year, n = years until then.
+// Playful replies for years we can't give a real result for.
+// y = birth year, n = years until then, g = the generation that future year will belong to.
+const yrs = n => `${n} year${n === 1 ? "" : "s"}`;
 const FOSSIL = [
   y => `🦕 Born in ${y}? You're not a generation, you're a fossil! A museum is looking for you.`,
   y => `🦴 ${y}?! Carbon dating confirms it: you're a fossil. Please return to your display case.`,
   y => `🏺 Born in ${y}? You're officially an antique. Generations hadn't even been invented yet!`,
 ];
-const UNBORN = [
-  (y, n) => `👶 ${y}? You're not born yet! Come back in ${n} year${n === 1 ? "" : "s"}.`,
-  y => `🔮 Greetings, time traveller from ${y}! Technically, you haven't been born yet.`,
-  (y, n) => `🛸 Born in ${y}? That's ${n} year${n === 1 ? "" : "s"} from now. Nice time machine!`,
+const FUTURE_GEN = [ // future year that already has a named generation (e.g. Gen Beta)
+  (y, n, g) => `👶 ${y}? You're not born yet, but when you arrive in ${yrs(n)}, you'll be ${g.name} ${g.emoji}!`,
+  (y, n, g) => `🔮 The crystal ball says: born in ${y}, you'll be ${g.name} ${g.emoji}. See you in ${yrs(n)}!`,
+  (y, n, g) => `🛸 Greetings, future ${g.name} ${g.emoji}! Come back in ${yrs(n)}, once you've actually been born.`,
+];
+const UNBORN = [ // so far in the future that no generation is named yet
+  (y, n) => `👶 ${y}? You're not born yet! Come back in ${yrs(n)}.`,
+  y => `🔮 Greetings, time traveller from ${y}! Technically, you haven't been born yet — and your generation doesn't even have a name.`,
+  (y, n) => `🛸 Born in ${y}? That's ${yrs(n)} from now. Nice time machine!`,
 ];
 
 // Returns a fun message if the year is before the first generation or in the future, else null.
 function outOfRangeMessage(year, thisYear, rand = Math.random) {
-  const list = year < GENS[0].from ? FOSSIL : year > thisYear ? UNBORN : null;
-  return list && list[Math.floor(rand() * list.length)](year, year - thisYear);
+  const pick = list => list[Math.floor(rand() * list.length)];
+  if (year < GENS[0].from) return pick(FOSSIL)(year);
+  if (year <= thisYear) return null;
+  const g = generationFor(year);
+  return g ? pick(FUTURE_GEN)(year, year - thisYear, g) : pick(UNBORN)(year, year - thisYear);
 }
 
 // answers: array of gen keys (null for "I don't…" picks, ignored). Returns the most-picked gen (null if nothing counted).
